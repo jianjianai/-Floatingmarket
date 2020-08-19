@@ -1,0 +1,12 @@
+name: Floatingmarket
+main: cn.jji8.Floatingmarket.main
+version: 1.0
+author: jianjianai
+api-version: 1.13
+softdepend: [Vault]
+commands:
+  Floatingmarket:
+    aliases: [fg]
+    description: "Floatingmarket的主命令"
+    permission-message: "你没有权限执行此命令"
+    usage: /<command> 命令
