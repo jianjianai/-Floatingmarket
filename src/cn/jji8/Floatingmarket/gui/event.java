@@ -68,7 +68,11 @@ public class event{
         biao = new ArrayList<Case>();
         List<String> 商品列表 = main.getconfig().getStringList("商品");
         for(String 商品:商品列表){
-            tianjia(Material.getMaterial(商品.toUpperCase().replaceAll(" ","_")));
+            Material material = Material.getMaterial(商品.toUpperCase().replaceAll(" ","_"));
+            if(material==null){
+                material = Material.LIGHT_GRAY_STAINED_GLASS_PANE;
+            }
+            tianjia(material);
         }
         for(Case i:biao){
             i.shuaxin();
