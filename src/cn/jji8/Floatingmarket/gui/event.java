@@ -7,7 +7,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -66,7 +65,7 @@ public class event{
      * */
     public static void jiazai(){
         biao = new ArrayList<Case>();
-        List<String> 商品列表 = main.getconfig().getStringList("商品");
+        List<String> 商品列表 = main.Configcommodity.getStringList("商品");
         for(String 商品:商品列表){
             Material material = Material.getMaterial(商品.toUpperCase().replaceAll(" ","_"));
             if(material==null){

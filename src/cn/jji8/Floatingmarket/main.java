@@ -5,14 +5,18 @@ import cn.jji8.Floatingmarket.command.implement;
 import cn.jji8.Floatingmarket.gui.event;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
 
 /**
  * 一个主类
  * */
 public class main extends JavaPlugin {
     static main main;
-    static FileConfiguration Config;
+    public static FileConfiguration Config;
+    public static FileConfiguration Configcommodity;
     /**
      * 插件启动时会被调用
      * */
@@ -23,6 +27,8 @@ public class main extends JavaPlugin {
         money.setupEconomy();//加载经济
         saveDefaultConfig();
         Config = getConfig();
+        saveResource("commodity.yml",false);
+        Configcommodity = YamlConfiguration.loadConfiguration(new File(main.getMain().getDataFolder(),"commodity.yml"));
         Bukkit.getPluginCommand("Floatingmarket").setExecutor(new implement());
         Bukkit.getPluginCommand("Floatingmarket").setTabCompleter(new completion());
         Bukkit.getPluginManager().registerEvents(new eventlisteners(),this);

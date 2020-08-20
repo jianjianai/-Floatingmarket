@@ -47,10 +47,13 @@ public class Case{
     /**
      * 用于加载或刷新商店页面
      * */
+    String 上一页按钮名字 = main.Config.getString("上一页按钮名字");
+    String 下一页按钮名字 = main.Config.getString("下一页按钮名字");
+    String 无商品名字 = main.Config.getString("无商品名字");
     public void shuaxin(){
         ItemStack ItemStack = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
         ItemMeta ItemMeta = ItemStack.getItemMeta();
-        ItemMeta.setDisplayName("§7§l此处无商品");
+        ItemMeta.setDisplayName(无商品名字);
         ItemStack.setItemMeta(ItemMeta);
         for(int i=0;i<54;i++){
             箱子.setItem(i,ItemStack);
@@ -63,13 +66,13 @@ public class Case{
         //上一页物品
         ItemStack = new ItemStack(Material.MAGENTA_STAINED_GLASS_PANE);
         ItemMeta = ItemStack.getItemMeta();
-        ItemMeta.setDisplayName("§a§l上一页");
+        ItemMeta.setDisplayName(上一页按钮名字);
         ItemStack.setItemMeta(ItemMeta);
         箱子.setItem(45,ItemStack);
         //下一页物品
         ItemStack = new ItemStack(Material.MAGENTA_STAINED_GLASS_PANE);
         ItemMeta = ItemStack.getItemMeta();
-        ItemMeta.setDisplayName("§a§l下一页");
+        ItemMeta.setDisplayName(下一页按钮名字);
         ItemStack.setItemMeta(ItemMeta);
         箱子.setItem(53,ItemStack);
     }

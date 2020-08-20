@@ -116,19 +116,26 @@ public class goods {
      * 调价
      * 用于调整物品价格
      * */
+    double 最高价格 = main.getconfig().getDouble("全局最高价格");
+    double 最低价格 = main.getconfig().getDouble("全局最低价格");
     double 涨跌幅度 = main.getconfig().getDouble("涨跌价格");
     double 涨跌指数 = main.getconfig().getDouble("涨跌指数");
     public void tiaojia(){
         while (购买数量>涨跌指数){
             价格 += 涨跌幅度;
             购买数量-=涨跌指数;
+            if(价格>=最高价格){
+                购买数量-=涨跌指数;
+                价格=最高价格;
+                break;
+            }
         }
         while(购买数量<-涨跌指数){
             价格 -= 涨跌幅度;
             购买数量+=涨跌指数;
-            if(价格<=0){
+            if(价格<=最低价格){
                 购买数量-=涨跌指数;
-                价格=0.0001;
+                价格=最低价格;
                 break;
             }
         }
