@@ -1,5 +1,8 @@
 package cn.jji8.Floatingmarket.gui;
 
+import cn.jji8.Floatingmarket.gui.goods.GoodSpecial;
+import cn.jji8.Floatingmarket.gui.goods.GoodsOrdinary;
+import cn.jji8.Floatingmarket.gui.goods.goods;
 import cn.jji8.Floatingmarket.main;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -18,7 +21,24 @@ public class Case{
     Inventory 箱子;
     Case(int 页数){
         this.页数 = 页数;
-        箱子 = org.bukkit.Bukkit.createInventory(null,6*9, main.getconfig().getString("箱子标题").replaceAll("%页数%",String.valueOf(页数)));
+        箱子 = org.bukkit.Bukkit.createInventory(null,6*9, main.getMain().getConfig().getString("箱子标题").replaceAll("%页数%",String.valueOf(页数)));
+    }
+    /**
+     * 搜索，用于搜索一件商品
+     * 没有商品返回null
+     * */
+    public goods sousuo(Material 商品){
+        return sousuo(new ItemStack(商品));
+    }
+    public goods sousuo(ItemStack 商品){
+        for(goods goods:物品){
+            if(goods!=null){
+                if(商品.equals(goods.getshangping())){
+                    return goods;
+                }
+            }
+        }
+        return null;
     }
     /**
      * 添加，添加箱子中的物品
@@ -30,7 +50,8 @@ public class Case{
         if(空位==-1){
             return false;
         }
-        物品[空位] = new goods(商品,true);
+        物品[空位] = new GoodsOrdinary(商品);
+        物品[空位].jiazai();
         return true;
     }
     /**
@@ -47,9 +68,9 @@ public class Case{
     /**
      * 用于加载或刷新商店页面
      * */
-    String 上一页按钮名字 = main.Config.getString("上一页按钮名字");
-    String 下一页按钮名字 = main.Config.getString("下一页按钮名字");
-    String 无商品名字 = main.Config.getString("无商品名字");
+    String 上一页按钮名字 = main.getMain().getConfig().getString("上一页按钮名字");
+    String 下一页按钮名字 = main.getMain().getConfig().getString("下一页按钮名字");
+    String 无商品名字 = main.getMain().getConfig().getString("无商品名字");
     public void shuaxin(){
         ItemStack ItemStack = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
         ItemMeta ItemMeta = ItemStack.getItemMeta();
@@ -111,13 +132,29 @@ public class Case{
         a.openInventory(箱子);
     }
     /**
-     * 用于添加物品
+     * 用于添加普通物品
      * true成功 fales满了
      * */
     public boolean add(Material 物品){
         for(int i=0;i<this.物品.length;i++){
             if(this.物品[i]==null){
-                this.物品[i]=new goods(物品,true);
+                this.物品[i]=new GoodsOrdinary(物品);
+                this.物品[i].jiazai();
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * 用于添加特殊物品
+     * true成功 fales满了
+     * ItemStack可以null
+     * */
+    public boolean add(String 文件名字,ItemStack a){
+        for(int i=0;i<this.物品.length;i++){
+            if(this.物品[i]==null){
+                this.物品[i]=new GoodSpecial(文件名字,a);
+                this.物品[i].jiazai();
                 return true;
             }
         }

@@ -1,4 +1,4 @@
-package cn.jji8.Floatingmarket.gui;
+package cn.jji8.Floatingmarket.gui.goods;
 
 import cn.jji8.Floatingmarket.main;
 import cn.jji8.Floatingmarket.money;
@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * 主要负责箱子中物品的处理
+ * 主要负责普通商品的处理
  * */
-public class goods {
-    double 价格;
-    Material 物品;
-    int 购买数量 = 0;
+public class GoodsOrdinary implements goods{
+    public double 价格;
+    public Material 物品;
+    long 购买数量 = 0;
     /**
      * 获取用于显示的物品堆
      * */
@@ -116,12 +116,21 @@ public class goods {
      * 调价
      * 用于调整物品价格
      * */
-    double 最高价格 = main.getconfig().getDouble("全局最高价格");
-    double 最低价格 = main.getconfig().getDouble("全局最低价格");
-    double 涨跌幅度 = main.getconfig().getDouble("涨跌价格");
-    double 涨跌指数 = main.getconfig().getDouble("涨跌指数");
+    double 最高价格 = main.getMain().getConfig().getDouble("全局最高价格");
+    double 最低价格 = main.getMain().getConfig().getDouble("全局最低价格");
+    double 涨跌幅度 = main.getMain().getConfig().getDouble("涨跌价格");
+    double 涨跌指数 = main.getMain().getConfig().getDouble("涨跌指数");
+
+    public double 单独最高价格 = -1;
+    public double 单独最低价格 = -1;
     public void tiaojia(){
         while (购买数量>涨跌指数){
+            if(单独最高价格>0){
+                最高价格 = 单独最高价格;
+            }
+            if(单独最低价格>0){
+                最低价格 = 单独最低价格;
+            }
             价格 += 涨跌幅度;
             购买数量-=涨跌指数;
             if(价格>=最高价格){
@@ -145,7 +154,7 @@ public class goods {
      * */
     public void tiaojiasuaxing(){
         tiaojia();
-        event.shuaxin();
+        main.getMain().event.shuaxin();
     }
     /**
      * 保存数据，但不会频繁重复保存
@@ -188,6 +197,8 @@ public class goods {
                 YamlConfiguration wenjian = YamlConfiguration.loadConfiguration(F);
                 wenjian.set("价格",价格);
                 wenjian.set("购买数量",购买数量);
+                wenjian.set("单独最高价格",单独最高价格);
+                wenjian.set("单独最低价格",单独最低价格);
                 try {
                     wenjian.save(F);
                 } catch (IOException e) {
@@ -202,32 +213,88 @@ public class goods {
      * 加载方法,用于加载数据
      * false没有相关数据使用默认值 true加载成功
      * */
-    public boolean jiazai(){
+    public void jiazai(){
         YamlConfiguration wenjian = YamlConfiguration.loadConfiguration(new File(main.getMain().getDataFolder(),"Price/"+物品.toString()));
         if(wenjian.contains("购买数量")){
-            购买数量 = wenjian.getInt("购买数量");
+            购买数量 = wenjian.getLong("购买数量");
         }else {
             购买数量 = 0;
         }
         if(wenjian.contains("价格")){
             价格 = wenjian.getDouble("价格");
-            return true;
+        }else {
+            价格 = main.getMain().getConfig().getDouble("默认价格");
         }
-        价格 = main.getconfig().getDouble("默认价格");
+        if(wenjian.contains("单独最高价格")){
+            单独最高价格 = wenjian.getDouble("单独最高价格");
+        }
+        if(wenjian.contains("单独最低价格")){
+            单独最低价格 = wenjian.getDouble("单独最低价格");
+        }
         baocun();
-        return false;
     }
+
+    /**
+     * 用于获取原商品
+     */
+    @Override
+    public ItemStack getshangping() {
+        return new ItemStack(物品);
+    }
+
+    /**
+     * 用于获取物品价格
+     */
+    @Override
+    public double getjiage() {
+        return 价格;
+    }
+
+    /**
+     * 用于设置物品价格
+     *
+     * @param 价格
+     */
+    @Override
+    public void setjiage(double 价格) {
+        this.价格 = 价格;
+    }
+
+    /**
+     * 用于设置物品最高价格
+     *
+     * @param 价格
+     */
+    @Override
+    public void setgaojiage(double 价格) {
+        this.单独最高价格 = 价格;
+    }
+
+    /**
+     * 用于设置物品最低价格
+     *
+     * @param 价格
+     */
+    @Override
+    public void setdijiage(double 价格) {
+        this.单独最低价格 = 价格;
+    }
+
+    /**
+     * 获取物品的名字
+     */
+    @Override
+    public String getname() {
+        return 物品.toString();
+    }
+
     /**
      * boolean 加载 true从配置文件中加载数据 false不加载数据,使用默认值
      * */
-    goods(Material 物品,boolean 加载){
+    public GoodsOrdinary(Material 物品){
         this.物品 = 物品;
-        if(加载){
-            jiazai();
-        } else {
-            价格 = main.getconfig().getDouble("默认价格");
-            购买数量 = 0;
-        }
+        价格 = main.getMain().getConfig().getDouble("默认价格");
+        购买数量 = 0;
     }
 
     public double get价格() {

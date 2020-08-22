@@ -4,6 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,6 +13,16 @@ import java.util.List;
 public class completion implements TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        if(strings.length==1){
+            ArrayList<String> ArrayList = new ArrayList<String>();
+            ArrayList.add("reload");
+            ArrayList.add("addspecial");
+            ArrayList.add("add");
+            ArrayList.add("help");
+            ArrayList.add("delete");
+            ArrayList.add("set");
+            return ArrayList;
+        }
         return null;
     }
 }

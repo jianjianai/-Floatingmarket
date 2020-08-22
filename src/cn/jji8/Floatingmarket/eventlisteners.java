@@ -8,6 +8,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class eventlisteners implements Listener {
     @EventHandler
     public void wanjia(InventoryClickEvent a) {//玩家点击物品栏格子时触发
-        event.dianji(a);
+        main.getMain().event.dianji(a);
     }
 }
