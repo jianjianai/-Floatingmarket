@@ -45,7 +45,7 @@ public class Case{
      * true 添加成功
      * false 满了，或添加失败
      * */
-    public boolean tianjia(Material 商品){
+    public boolean tianjia(ItemStack 商品){
         int 空位 = kongw();
         if(空位==-1){
             return false;
@@ -71,8 +71,11 @@ public class Case{
     String 上一页按钮名字 = main.getMain().getConfig().getString("上一页按钮名字");
     String 下一页按钮名字 = main.getMain().getConfig().getString("下一页按钮名字");
     String 无商品名字 = main.getMain().getConfig().getString("无商品名字");
+    String 上一页物品按钮 = main.getMain().getConfig().getString("上一页物品按钮");
+    String 下一页物品按钮 = main.getMain().getConfig().getString("下一页物品按钮");
+    String 无商品显示物品 = main.getMain().getConfig().getString("无商品显示物品");
     public void shuaxin(){
-        ItemStack ItemStack = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
+        ItemStack ItemStack = new ItemStack(Material.getMaterial(无商品显示物品));
         ItemMeta ItemMeta = ItemStack.getItemMeta();
         ItemMeta.setDisplayName(无商品名字);
         ItemStack.setItemMeta(ItemMeta);
@@ -85,13 +88,13 @@ public class Case{
             }
         }
         //上一页物品
-        ItemStack = new ItemStack(Material.MAGENTA_STAINED_GLASS_PANE);
+        ItemStack = new ItemStack(Material.getMaterial(上一页物品按钮));
         ItemMeta = ItemStack.getItemMeta();
         ItemMeta.setDisplayName(上一页按钮名字);
         ItemStack.setItemMeta(ItemMeta);
         箱子.setItem(45,ItemStack);
         //下一页物品
-        ItemStack = new ItemStack(Material.MAGENTA_STAINED_GLASS_PANE);
+        ItemStack = new ItemStack(Material.getMaterial(下一页物品按钮));
         ItemMeta = ItemStack.getItemMeta();
         ItemMeta.setDisplayName(下一页按钮名字);
         ItemStack.setItemMeta(ItemMeta);
@@ -135,7 +138,7 @@ public class Case{
      * 用于添加普通物品
      * true成功 fales满了
      * */
-    public boolean add(Material 物品){
+    public boolean add(ItemStack 物品){
         for(int i=0;i<this.物品.length;i++){
             if(this.物品[i]==null){
                 this.物品[i]=new GoodsOrdinary(物品);

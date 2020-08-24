@@ -1,6 +1,6 @@
 name: Floatingmarket
 main: cn.jji8.Floatingmarket.main
-version: 1.5
+version: 2.0
 author: jianjianai
 api-version: 1.13
 softdepend: [Vault]

@@ -3,6 +3,7 @@ package cn.jji8.Floatingmarket.command;
 import cn.jji8.Floatingmarket.gui.event;
 import cn.jji8.Floatingmarket.gui.goods.goods;
 import cn.jji8.Floatingmarket.main;
+import cn.jji8.Floatingmarket.money;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
 
 /**
  * 一个命令执行器,专用于执行命令
@@ -25,12 +28,7 @@ public class implement implements CommandExecutor {
                     return true;
                 }
                 commandSender.sendMessage("开始重新加载");
-                main.getMain().reloadConfig();
-                for(Player P:org.bukkit.Bukkit.getOnlinePlayers()){
-                    P.closeInventory();
-                }
-                main.getMain().event = new event();
-                main.getMain().event.jiazai();
+                reload();
                 commandSender.sendMessage("重新加载完成");
                 return true;
             }
@@ -65,6 +63,8 @@ public class implement implements CommandExecutor {
                 commandSender.sendMessage("§7//删除手上物品商品");
                 commandSender.sendMessage("§e/Floatingmarket reload");
                 commandSender.sendMessage("§7//重新加载插件配置文件");
+                commandSender.sendMessage("§e/Floatingmarket exchange 数字 数字");
+                commandSender.sendMessage("§7//交换两个商品的位置");
                 commandSender.sendMessage("§6---------------------------------------------------");
                 return true;
             }
@@ -120,8 +120,59 @@ public class implement implements CommandExecutor {
                 delete(Player);
                 return true;
             }
+            if("exchange".equals(参数[0])){
+                if(!commandSender.hasPermission("Floatingmarket.exchange")){
+                    commandSender.sendMessage("你没有执行此命令的权限");
+                    return true;
+                }
+                if(参数.length!=3){
+                    commandSender.sendMessage("§e/Floatingmarket exchange 数字 数字");
+                    return true;
+                }
+                try {
+                    if(exchange(Integer.valueOf(参数[1]),Integer.valueOf(参数[2]))){
+                        commandSender.sendMessage("交换成功");
+                        return true;
+                    }else {
+                        commandSender.sendMessage("你输入的数字没有对应的商品");
+                    }
+                }catch (NumberFormatException a){
+                    commandSender.sendMessage("你输入的数字不是一个有效数字");
+                    return true;
+                }
+                return true;
+            }
         }
         commandSender.sendMessage("命令参数错误");
+        return true;
+    }
+    /**
+     * 创新加载全部配置文件的方法
+     * */
+    private static void reload() {
+        main.getMain().reloadConfig();
+        for(Player P:org.bukkit.Bukkit.getOnlinePlayers()){
+            P.closeInventory();
+        }
+        money.setupEconomy();
+        main.getMain().event = new event();
+        main.getMain().event.jiazai();
+    }
+
+    /**
+     * 交互方法，用于交换两个商品的位置
+     * */
+    public static boolean exchange(int 位置1,int 位置2){
+        List<String> List = main.getMain().event.get商品列表();
+        if(位置1<0|位置2<0|位置1>=List.size()|位置2>=List.size()){
+            return false;
+        }
+        String a = List.get(位置1);
+        String b = List.get(位置2);
+        List.set(位置1,b);
+        List.set(位置2,a);
+        main.getMain().event.baocun();
+        reload();
         return true;
     }
     /**
@@ -130,7 +181,7 @@ public class implement implements CommandExecutor {
      * */
     public static void addspecial(Player 命令执行者){
         ItemStack ItemStack = 命令执行者.getInventory().getItemInMainHand();
-        if(ItemStack.getType().isAir()){
+        if(Material.AIR.equals(ItemStack.getType())){
             命令执行者.sendMessage("你不可以空手");
             return;
         }
@@ -162,7 +213,7 @@ public class implement implements CommandExecutor {
      * */
     public static void add(Player 命令执行者){
         Material Material = 命令执行者.getInventory().getItemInMainHand().getType();
-        if(Material.isAir()){
+        if(Material.AIR.equals(Material)){
             命令执行者.sendMessage("你不可以空手");
             return;
         }
@@ -194,7 +245,7 @@ public class implement implements CommandExecutor {
      * */
     public static void tianjia(Player Player, double 价格, double 最低价格, double 最高价格){
         ItemStack 物品堆 = Player.getInventory().getItemInMainHand();
-        if(物品堆.getType().isAir()){
+        if(Material.AIR.equals(物品堆.getType())){
             Player.sendMessage("你不可以空手");
             return;
         }
@@ -207,25 +258,14 @@ public class implement implements CommandExecutor {
         goods.setdijiage(最低价格);
         goods.setgaojiage(最高价格);
         main.getMain().event.shuaxin();
+        goods.baocun();
         Player.sendMessage("设置成功");
     }
     /**
      * 修改方法，修改物品的价格
      * */
     public static void tianjia(Player Player, double 价格){
-        ItemStack 物品堆 = Player.getInventory().getItemInMainHand();
-        if(物品堆.getType().isAir()){
-            Player.sendMessage("你不可以空手");
-            return;
-        }
-        goods goods = main.getMain().event.shousuo(物品堆);
-        if(goods==null){
-            Player.sendMessage("此商品没有被上架");
-            return;
-        }
-        goods.setjiage(价格);
-        main.getMain().event.shuaxin();
-        Player.sendMessage("设置成功");
+        tianjia(Player,价格,-1,-1);
     }
     /**
      * 删除方法，用于删除商品
@@ -233,7 +273,7 @@ public class implement implements CommandExecutor {
      * */
     public static boolean delete(Player Player){
         ItemStack 物品堆 = Player.getInventory().getItemInMainHand();
-        if(物品堆.getType().isAir()){
+        if(Material.AIR.equals(物品堆.getType())){
             Player.sendMessage("你不可以空手");
             return false;
         }

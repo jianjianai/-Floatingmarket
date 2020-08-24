@@ -21,6 +21,7 @@ public class completion implements TabCompleter {
             ArrayList.add("help");
             ArrayList.add("delete");
             ArrayList.add("set");
+            ArrayList.add("exchange");
             return ArrayList;
         }
         return null;

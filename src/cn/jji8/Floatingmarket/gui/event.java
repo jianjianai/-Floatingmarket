@@ -1,6 +1,5 @@
 package cn.jji8.Floatingmarket.gui;
 
-import cn.jji8.Floatingmarket.gui.goods.GoodsOrdinary;
 import cn.jji8.Floatingmarket.gui.goods.goods;
 import cn.jji8.Floatingmarket.main;
 import org.bukkit.Material;
@@ -27,6 +26,12 @@ public class event{
         return 商品列表.remove(商品);
     }
     /**
+     * get方法
+     * */
+    public List<String> get商品列表(){
+        return 商品列表;
+    }
+    /**
      * 通过ItemStack添加商品
      * */
     public void add(ItemStack a){
@@ -46,7 +51,7 @@ public class event{
      * */
      public void add(Material a){
          商品列表.add(a.toString());
-         tianjia(a);
+         tianjia(new ItemStack(a));
          shuaxin();
          baocun();
      }
@@ -126,9 +131,10 @@ public class event{
     /**
      * 用于给玩家打开指定gui
      * */
+    String 没有页数消息 = main.getMain().getConfig().getString("没有页数消息");
     public void dakai(Player 玩家,int 页数){
         if(biao.size()<页数|页数<1){
-            玩家.sendMessage("没有第"+页数+"页哦！");
+            玩家.sendMessage(没有页数消息.replaceAll("%页数%", Integer.toString(页数)));
             return;
         }
         页数--;
@@ -146,21 +152,24 @@ public class event{
             }else {
                 Material material = Material.getMaterial(商品列表.get(sss).toUpperCase().replaceAll(" ","_"));
                 if(material==null){
-                    material = Material.LIGHT_GRAY_STAINED_GLASS_PANE;
+                    商品列表.set(sss,"错误");
+                    tianjia(null);
+                }else {
+                    商品列表.set(sss,material.toString());
+                    tianjia(new ItemStack(material));
                 }
-                商品列表.set(sss,material.toString());
-                tianjia(material);
             }
         }
         for(Case i:biao){
             i.shuaxin();
         }
+        baocun();
     }
     /**
      * 用于添加商品
      * */
      int 页数 = 1;
-     void tianjia(Material 商品){
+     void tianjia(ItemStack 商品){
         if(biao.size()==0){
             biao.add(new Case(页数));
             页数++;
@@ -178,7 +187,7 @@ public class event{
      * 向现有case中添加商品
      * 添加成功返回true，已满返回false
      * */
-     boolean biaotianjia(Material 添加商品){
+     boolean biaotianjia(ItemStack 添加商品){
         for(Case 商品:biao){
             if(商品.add(添加商品)){
                 return true;
