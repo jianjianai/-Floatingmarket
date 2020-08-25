@@ -22,11 +22,11 @@
 #——————————————————————————————————————————————————————————
 箱子标题: "§d§l市场  第%页数%页"
 上一页按钮名字: "§a§l上一页"
-上一页物品按钮: "GOLD_PICKAXE"
+上一页物品按钮: "MAGENTA_STAINED_GLASS_PANE"
 下一页按钮名字: "§a§l下一页"
-下一页物品按钮: "DIAMOND_PICKAXE"
+下一页物品按钮: "MAGENTA_STAINED_GLASS_PANE"
 无商品名字: "§7§l此处无商品"
-无商品显示物品: "STAINED_GLASS_PANE"
+无商品显示物品: "LIGHT_GRAY_STAINED_GLASS_PANE"
 错误物品: "BEDROCK"
 价格显示:
   - "§f-------------------------------"

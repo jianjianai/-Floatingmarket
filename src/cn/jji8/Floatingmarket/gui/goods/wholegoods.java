@@ -82,7 +82,12 @@ public class wholegoods{
         boolean 错误 = false;
         ItemStack ItemStack;
         if(物品==null){
-            ItemStack = new ItemStack(Material.getMaterial(错误物品));
+            try {
+                ItemStack = new ItemStack(Material.getMaterial(错误物品));
+            }catch (Throwable a){
+                main.getMain().getLogger().warning("配置文件中“错误物品”错误，请检查配置文件");
+                return new ItemStack(Material.BEDROCK);
+            }
             错误 = true;
         }else {
             物品.setAmount(1);

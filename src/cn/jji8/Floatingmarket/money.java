@@ -53,7 +53,7 @@ public class money {
             return false;
         }
         double 扣税 = 0;
-        double 剩余 = 0;
+        double 剩余 = qian;
         if(个人所得税>0){
             扣税 = qian*个人所得税;
             剩余 = qian-扣税;

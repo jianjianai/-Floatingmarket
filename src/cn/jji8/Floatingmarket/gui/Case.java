@@ -75,7 +75,13 @@ public class Case{
     String 下一页物品按钮 = main.getMain().getConfig().getString("下一页物品按钮");
     String 无商品显示物品 = main.getMain().getConfig().getString("无商品显示物品");
     public void shuaxin(){
-        ItemStack ItemStack = new ItemStack(Material.getMaterial(无商品显示物品));
+        ItemStack ItemStack;
+        try {
+            ItemStack = new ItemStack(Material.getMaterial(无商品显示物品));
+        }catch (Throwable a){
+            main.getMain().getLogger().warning("配置文件中“无商品显示物品”错误，请检查配置文件");
+            return;
+        }
         ItemMeta ItemMeta = ItemStack.getItemMeta();
         ItemMeta.setDisplayName(无商品名字);
         ItemStack.setItemMeta(ItemMeta);
@@ -88,13 +94,23 @@ public class Case{
             }
         }
         //上一页物品
-        ItemStack = new ItemStack(Material.getMaterial(上一页物品按钮));
+        try {
+            ItemStack = new ItemStack(Material.getMaterial(上一页物品按钮));
+        }catch (Throwable a){
+            main.getMain().getLogger().warning("配置文件中“上一页物品按钮”错误，请检查配置文件");
+            return;
+        }
         ItemMeta = ItemStack.getItemMeta();
         ItemMeta.setDisplayName(上一页按钮名字);
         ItemStack.setItemMeta(ItemMeta);
         箱子.setItem(45,ItemStack);
         //下一页物品
-        ItemStack = new ItemStack(Material.getMaterial(下一页物品按钮));
+        try {
+            ItemStack = new ItemStack(Material.getMaterial(下一页物品按钮));
+        }catch (Throwable a){
+            main.getMain().getLogger().warning("配置文件中“下一页物品按钮”错误，请检查配置文件");
+            return;
+        }
         ItemMeta = ItemStack.getItemMeta();
         ItemMeta.setDisplayName(下一页按钮名字);
         ItemStack.setItemMeta(ItemMeta);
