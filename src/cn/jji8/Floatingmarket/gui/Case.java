@@ -135,9 +135,9 @@ public class Case{
             return;
         }
         if(ClickType.SHIFT_LEFT.equals(a.getClick())){//Shift+鼠标左键. 购买一组
-            物品[格子].goumai((Player) a.getWhoClicked(),64);
+            物品[格子].goumaiyizu((Player) a.getWhoClicked());
         }else if(ClickType.SHIFT_RIGHT.equals(a.getClick())){//Shift+鼠标右键. 出售一组
-            物品[格子].chushou((Player) a.getWhoClicked(),64);
+            物品[格子].chushouyizu((Player) a.getWhoClicked());
         }else if(ClickType.LEFT.equals(a.getClick())){//鼠标左键. 购买一
             物品[格子].goumai((Player) a.getWhoClicked(),1);
         }else if(ClickType.RIGHT.equals(a.getClick())){//鼠标右键. 出售一

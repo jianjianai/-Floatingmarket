@@ -21,27 +21,47 @@ public class wholegoods{
     public double 单独最高价格 = -1;
     public double 单独最低价格 = -1;
     public ItemStack 物品;
+    double 手续费 = main.getMain().getConfig().getDouble("手续费");
+    /**
+     * 调用此方法代表玩家出售此物品一组
+     */
+    public void chushouyizu(Player P){
+        chushou(P,物品.getMaxStackSize());
+    }
     /**
      * 调用此方法代表玩家出售此物品
      */
     String 没物品消息 = main.getMain().getConfig().getString("没物品消息");
     String 操作失败消息 = main.getMain().getConfig().getString("操作失败消息");
+    String 手续费不足 = main.getMain().getConfig().getString("手续费不足");
+    String 扣除手续费 = main.getMain().getConfig().getString("扣除手续费");
     public void chushou(Player P, int 数量) {
-        if(!kouwupin(P,数量,物品)){
-            P.sendMessage(没物品消息);
-            return;
-        }
-        购买数量 -= 数量;
-        tiaojiasuaxing();
-        if(!money.jiaqian(P,数量*价格)){
-            P.sendMessage(操作失败消息);
-            for(int i = 0;i<数量;i++){
-                P.getInventory().addItem(物品);
+        synchronized(this){
+            if(!kouwupin(P,数量,物品)){
+                P.sendMessage(没物品消息);
+                return;
             }
-            return;
-        }else {
-            baocun(10);
+            if(手续费>0){
+                if(!money.kouqian(P,手续费,false)){
+                    P.sendMessage(手续费不足.replaceAll("%钱%",Double.toString(手续费)));
+                    return;
+                }else {
+                    P.sendMessage(扣除手续费.replaceAll("%钱%",Double.toString(手续费)));
+                }
+            }
+            购买数量 -= 数量;
+            tiaojia();
+            if(!money.jiaqian(P,数量*价格)){
+                P.sendMessage(操作失败消息);
+                for(int i = 0;i<数量;i++){
+                    购买数量++;
+                    P.getInventory().addItem(物品);
+                }
+                return;
+            }
         }
+        tiaojiasuaxing();
+        baocun(10);
     }
     /**
      * 保存数据，但不会频繁重复保存
@@ -222,28 +242,48 @@ public class wholegoods{
         main.getMain().event.shuaxin();
     }
     /**
+     * 调用此方法代表玩家购买一组物品
+     * */
+    public void goumaiyizu(Player P){
+        goumai(P,物品.getMaxStackSize());
+    }
+    /**
      * 调用此方法代表玩家购买了此商品
      */
     String 背包满消息 = main.getMain().getConfig().getString("背包满消息");
+    String 增加手续费 = main.getMain().getConfig().getString("增加手续费");
     public void goumai(Player P, int 数量) {
-        购买数量 += 数量;
-        tiaojia();
-        if(!money.kouqian(P,价格*数量)){
-            return;
-        }
-        int 退回数量 = 0;
-        for(;数量>0;数量--){
-            HashMap HashMap = P.getInventory().addItem(物品);
-            for(Object a:HashMap.values()){
-                if(a instanceof ItemStack){
-                    退回数量++;
+        synchronized(this){
+            long 前购买数量 = 购买数量;
+            double 前价格 = 价格;
+            购买数量 += 数量;
+            tiaojia();
+            double 总价格 = 0;
+            if(手续费>0){
+                P.sendMessage(增加手续费.replaceAll("%钱%",Double.toString(手续费)));
+                总价格 = (价格*数量)+手续费;
+            }else {
+                总价格 = 价格*数量;
+            }
+            if(!money.kouqian(P,总价格)){
+                购买数量 = 前购买数量;
+                价格 = 前价格;
+                return;
+            }
+            int 退回数量 = 0;
+            for(;数量>0;数量--){
+                HashMap HashMap = P.getInventory().addItem(物品);
+                for(Object a:HashMap.values()){
+                    if(a instanceof ItemStack){
+                        退回数量++;
+                    }
                 }
             }
-        }
-        if(退回数量!=0){
-            购买数量 -= 退回数量;
-            money.jiaqian(P,退回数量*价格);
-            P.sendMessage(背包满消息);
+            if(退回数量!=0){
+                购买数量 -= 退回数量;
+                money.jiaqian(P,退回数量*价格,true,false);
+                P.sendMessage(背包满消息);
+            }
         }
         tiaojiasuaxing();
         baocun(10);

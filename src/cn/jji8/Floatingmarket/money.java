@@ -48,13 +48,19 @@ public class money {
      * 加钱失败返回false
      * */
     public static boolean jiaqian(Player P, double qian){
+        return jiaqian(P, qian,true,true);
+    }
+    public static boolean jiaqian(Player P, double qian,boolean 显示消息,boolean 是否扣税){
         if(econ==null){
             P.sendMessage("没有经济前置，无法处理");
             return false;
         }
         double 扣税 = 0;
         double 剩余 = qian;
-        if(个人所得税>0){
+        if(个人所得税<=0){
+            是否扣税 = false;
+        }
+        if(是否扣税){
             扣税 = qian*个人所得税;
             剩余 = qian-扣税;
         }
@@ -64,9 +70,14 @@ public class money {
         EconomyResponse EconomyResponse = econ.depositPlayer(P,剩余);//尝试加钱
         if(EconomyResponse.transactionSuccess()){//判断操作是否成功
             String 价格字符舍 = XianShiZiFu(qian);
-            String 扣税字符舍 = XianShiZiFu(扣税);
+            String 扣税字符舍 = "无扣税";
+            if(是否扣税){
+                扣税字符舍 = XianShiZiFu(扣税);
+            }
             String 剩余字符舍 = XianShiZiFu(剩余);
-            P.sendMessage(赚钱消息.replaceAll("%钱%",价格字符舍).replaceAll("%税%",扣税字符舍).replaceAll("%剩余%",剩余字符舍));
+            if(显示消息){
+                P.sendMessage(赚钱消息.replaceAll("%钱%",价格字符舍).replaceAll("%税%",扣税字符舍).replaceAll("%剩余%",剩余字符舍));
+            }
             return true;
         }else {
             P.sendMessage("操作失败");
@@ -79,18 +90,25 @@ public class money {
      * 扣除失败或没钱返回false
      * */
     public static boolean kouqian(Player P, double qian){
+        return kouqian(P,qian,true);
+    }
+    public static boolean kouqian(Player P, double qian,boolean 显示消息){
         if(econ==null){
             P.sendMessage("没有经济前置，无法处理");
             return false;
         }
         String 价格字符舍 = XianShiZiFu(qian);
         if(!econ.has(P,qian)){//检查玩家是否有足够的钱
-            P.sendMessage(没钱消息.replaceAll("%钱%",价格字符舍));
+            if(显示消息){
+                P.sendMessage(没钱消息.replaceAll("%钱%",价格字符舍));
+            }
             return false;
         }
         EconomyResponse EconomyResponse = econ.withdrawPlayer(P,qian);//尝试扣钱
         if(EconomyResponse.transactionSuccess()){//判断操作是否成功
-            P.sendMessage(花钱消息.replaceAll("%钱%",价格字符舍));
+            if(显示消息){
+                P.sendMessage(花钱消息.replaceAll("%钱%",价格字符舍));
+            }
             return true;
         }else {
             P.sendMessage("操作失败");

@@ -49,4 +49,12 @@ public interface goods {
      * 获取物品的名字
      * */
     public String getname();
+    /**
+     * 调用此方法代表玩家出售此物品一组
+     */
+    public void chushouyizu(Player P);
+    /**
+     * 调用此方法代表玩家购买一组物品
+     * */
+    public void goumaiyizu(Player P);
 }

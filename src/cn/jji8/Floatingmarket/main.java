@@ -12,11 +12,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class main extends JavaPlugin {
     static main main;
     public event event;
+    Metrics Metrics;
     /**
      * 插件启动时会被调用
      * */
     @Override
     public void onEnable() {
+        Metrics = new Metrics(this,8676);
         main = this;
         getLogger().info("开始加载...");
         money.setupEconomy();//加载经济
