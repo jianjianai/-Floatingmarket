@@ -1,7 +1,7 @@
 package cn.jji8.Floatingmarket.gui.goods;
 
 import cn.jji8.Floatingmarket.main;
-import cn.jji8.Floatingmarket.money;
+import cn.jji8.Floatingmarket.account.money;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -36,29 +36,26 @@ public class wholegoods{
     String 手续费不足 = main.getMain().getConfig().getString("手续费不足");
     String 扣除手续费 = main.getMain().getConfig().getString("扣除手续费");
     public void chushou(Player P, int 数量) {
-        synchronized(this){
-            if(!kouwupin(P,数量,物品)){
-                P.sendMessage(没物品消息);
+        if(!kouwupin(P,数量,物品)){
+            P.sendMessage(没物品消息);
+            return;
+        }
+        if(手续费>0){
+            if(!money.kouqian(P,手续费,false)){
+                P.sendMessage(手续费不足.replaceAll("%钱%",Double.toString(手续费)));
                 return;
+            }else {
+                P.sendMessage(扣除手续费.replaceAll("%钱%",Double.toString(手续费)));
             }
-            if(手续费>0){
-                if(!money.kouqian(P,手续费,false)){
-                    P.sendMessage(手续费不足.replaceAll("%钱%",Double.toString(手续费)));
-                    return;
-                }else {
-                    P.sendMessage(扣除手续费.replaceAll("%钱%",Double.toString(手续费)));
-                }
+        }
+        购买数量 -= 数量;
+        tiaojia();
+        if(!money.jiaqian(P,数量*价格)){
+            for(int i = 0;i<数量;i++){
+                购买数量++;
+                P.getInventory().addItem(物品);
             }
-            购买数量 -= 数量;
-            tiaojia();
-            if(!money.jiaqian(P,数量*价格)){
-                P.sendMessage(操作失败消息);
-                for(int i = 0;i<数量;i++){
-                    购买数量++;
-                    P.getInventory().addItem(物品);
-                }
-                return;
-            }
+            return;
         }
         tiaojiasuaxing();
         baocun(10);
@@ -88,9 +85,11 @@ public class wholegoods{
                     }
                 }
             };
+            执行时间 = System.currentTimeMillis()+时间秒*1000;
             T.start();
+        }else {
+            执行时间 = System.currentTimeMillis()+时间秒*1000;
         }
-        执行时间 = System.currentTimeMillis()+时间秒*1000;
     }
     public void baocun(){}
     /**
@@ -125,11 +124,16 @@ public class wholegoods{
         if(ArrayList==null){
             ArrayList = new ArrayList();
         }
+        String 服务器账户余额字符舍 = money.XianShiZiFu(main.getMain().getServermoney().getmoney());
         for(String S:价格显示){
             if(购买数量>=0){
-                S = S.replaceAll("%价格%",价格字符舍).replaceAll("%购买数量%","+"+购买数量);
+                S = S.replaceAll("%价格%",价格字符舍)
+                        .replaceAll("%购买数量%","+"+购买数量)
+                        .replaceAll("%服务器账户余额%",服务器账户余额字符舍);
             }else {
-                S = S.replaceAll("%价格%",价格字符舍).replaceAll("%购买数量%",Long.toString(购买数量));
+                S = S.replaceAll("%价格%",价格字符舍)
+                        .replaceAll("%购买数量%",Long.toString(购买数量))
+                        .replaceAll("%服务器账户余额%",服务器账户余额字符舍);
             }
             ArrayList.add(S);
         }
@@ -253,37 +257,35 @@ public class wholegoods{
     String 背包满消息 = main.getMain().getConfig().getString("背包满消息");
     String 增加手续费 = main.getMain().getConfig().getString("增加手续费");
     public void goumai(Player P, int 数量) {
-        synchronized(this){
-            long 前购买数量 = 购买数量;
-            double 前价格 = 价格;
-            购买数量 += 数量;
-            tiaojia();
-            double 总价格 = 0;
-            if(手续费>0){
-                P.sendMessage(增加手续费.replaceAll("%钱%",Double.toString(手续费)));
-                总价格 = (价格*数量)+手续费;
-            }else {
-                总价格 = 价格*数量;
-            }
-            if(!money.kouqian(P,总价格)){
-                购买数量 = 前购买数量;
-                价格 = 前价格;
-                return;
-            }
-            int 退回数量 = 0;
-            for(;数量>0;数量--){
-                HashMap HashMap = P.getInventory().addItem(物品);
-                for(Object a:HashMap.values()){
-                    if(a instanceof ItemStack){
-                        退回数量++;
-                    }
+        long 前购买数量 = 购买数量;
+        double 前价格 = 价格;
+        购买数量 += 数量;
+        tiaojia();
+        double 总价格 = 0;
+        if(手续费>0){
+            P.sendMessage(增加手续费.replaceAll("%钱%",Double.toString(手续费)));
+            总价格 = (价格*数量)+手续费;
+        }else {
+            总价格 = 价格*数量;
+        }
+        if(!money.kouqian(P,总价格)){
+            购买数量 = 前购买数量;
+            价格 = 前价格;
+            return;
+        }
+        int 退回数量 = 0;
+        for(;数量>0;数量--){
+            HashMap HashMap = P.getInventory().addItem(物品);
+            for(Object a:HashMap.values()){
+                if(a instanceof ItemStack){
+                    退回数量++;
                 }
             }
-            if(退回数量!=0){
-                购买数量 -= 退回数量;
-                money.jiaqian(P,退回数量*价格,true,false);
-                P.sendMessage(背包满消息);
-            }
+        }
+        if(退回数量!=0){
+            购买数量 -= 退回数量;
+            money.jiaqian(P,退回数量*价格,true,false);
+            P.sendMessage(背包满消息);
         }
         tiaojiasuaxing();
         baocun(10);

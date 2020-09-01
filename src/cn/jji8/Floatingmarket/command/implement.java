@@ -3,15 +3,14 @@ package cn.jji8.Floatingmarket.command;
 import cn.jji8.Floatingmarket.gui.event;
 import cn.jji8.Floatingmarket.gui.goods.goods;
 import cn.jji8.Floatingmarket.main;
-import cn.jji8.Floatingmarket.money;
+import cn.jji8.Floatingmarket.account.money;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
@@ -40,6 +39,10 @@ public class implement implements CommandExecutor {
         }
         Player Player = (Player) commandSender;
         if(参数.length==0){
+            if(!commandSender.hasPermission("Floatingmarket.open")){
+                commandSender.sendMessage("没有打开商店的权限，需要：Floatingmarket.open");
+                return true;
+            }
             main.getMain().event.dakai(Player,1);
             return true;
         }
@@ -65,6 +68,8 @@ public class implement implements CommandExecutor {
                 commandSender.sendMessage("§7//重新加载插件配置文件");
                 commandSender.sendMessage("§e/Floatingmarket exchange 数字 数字");
                 commandSender.sendMessage("§7//交换两个商品的位置");
+                commandSender.sendMessage("§e/Floatingmarket setservermoney 钱");
+                commandSender.sendMessage("§7//设置服务器钱数");
                 commandSender.sendMessage("§6---------------------------------------------------");
                 return true;
             }
@@ -82,6 +87,23 @@ public class implement implements CommandExecutor {
                     return true;
                 }
                 add(Player);
+                return true;
+            }
+            if("setservermoney".equals(参数[0])){
+                if(!commandSender.hasPermission("Floatingmarket.setservermoney")){
+                    commandSender.sendMessage("你没有执行此命令的权限");
+                    return true;
+                }
+                if(参数.length!=2){
+                    commandSender.sendMessage("setservermoney 钱数");
+                    return true;
+                }
+                try {
+                    setServermoney(Double.valueOf(参数[1]));
+                    commandSender.sendMessage("设置成功");
+                }catch (NumberFormatException a){
+                    commandSender.sendMessage("你输入的数字不是一个有效数字");
+                }
                 return true;
             }
             if("set".equals(参数[0])){
@@ -151,12 +173,10 @@ public class implement implements CommandExecutor {
      * */
     private static void reload() {
         main.getMain().reloadConfig();
-        for(Player P:org.bukkit.Bukkit.getOnlinePlayers()){
+        for(Player P: Bukkit.getOnlinePlayers()){
             P.closeInventory();
         }
-        money.setupEconomy();
-        main.getMain().event = new event();
-        main.getMain().event.jiazai();
+        main.getMain().reload();
     }
 
     /**
@@ -282,19 +302,24 @@ public class implement implements CommandExecutor {
             Player.sendMessage("此商品没有被上架");
             return false;
         }
+        goods.delete();
         if(main.getMain().event.delete(goods.getname())){
             Player.sendMessage("删除成功");
             main.getMain().event.baocun();
-            for(Player P:org.bukkit.Bukkit.getOnlinePlayers()){
+            for(Player P: Bukkit.getOnlinePlayers()){
                 P.closeInventory();
             }
-            main.getMain().event = new event();
-            main.getMain().event.jiazai();
+            main.getMain().reload();
             return true;
         }else {
             Player.sendMessage("错误？");
             return false;
         }
 
+    }
+
+    public void setServermoney(Double servermoney) {
+        main.getMain().getServermoney().set余额(servermoney);
+        main.getMain().event.shuaxin();
     }
 }

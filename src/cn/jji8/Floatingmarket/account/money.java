@@ -1,5 +1,6 @@
-package cn.jji8.Floatingmarket;
+package cn.jji8.Floatingmarket.account;
 
+import cn.jji8.Floatingmarket.main;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -16,8 +17,10 @@ public class money {
     static String 赚钱消息;
     static String 花钱消息;
     static String 没钱消息;
+    static String 服务器没钱消息;
     static int 保留小数位数;
     static double 个人所得税;
+    static boolean 启用服务器账户;
     /**
      * 插件启动时被调用,用于加载经济
      * */
@@ -28,13 +31,15 @@ public class money {
         赚钱消息 = peizhi.getString("赚钱消息");
         花钱消息 = peizhi.getString("花钱消息");
         没钱消息 = peizhi.getString("没钱消息");
+        服务器没钱消息 = peizhi.getString("服务器没钱消息");
         保留小数位数 = peizhi.getInt("保留小数位数");
         个人所得税 = peizhi.getDouble("个人所得税");
-        if (main.main.getServer().getPluginManager().getPlugin("Vault") == null) {
+        启用服务器账户 = peizhi.getBoolean("启用服务器账户");
+        if (main.getMain().getServer().getPluginManager().getPlugin("Vault") == null) {
             System.out.println("没有找到Vault依赖");
             return false;
         }
-        RegisteredServiceProvider< Economy > rsp = main.main.getServer().getServicesManager().getRegistration(Economy.class);
+        RegisteredServiceProvider< Economy > rsp = main.getMain().getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
             System.out.println("请安装ess");
             return false;
@@ -55,6 +60,10 @@ public class money {
             P.sendMessage("没有经济前置，无法处理");
             return false;
         }
+        if(qian<0){
+            P.sendMessage("出现负数，无法操作");
+            return false;
+        }
         double 扣税 = 0;
         double 剩余 = qian;
         if(个人所得税<=0){
@@ -64,17 +73,20 @@ public class money {
             扣税 = qian*个人所得税;
             剩余 = qian-扣税;
         }
-        if(econ==null){
-            return false;
+        String 价格字符舍 = XianShiZiFu(qian);
+        String 扣税字符舍 = "无扣税";
+        if(是否扣税){
+            扣税字符舍 = XianShiZiFu(扣税);
+        }
+        String 剩余字符舍 = XianShiZiFu(剩余);
+        if(启用服务器账户){
+            if(!main.getMain().getServermoney().reduce(剩余)){
+                P.sendMessage(服务器没钱消息.replaceAll("%钱%",剩余字符舍));
+                return false;
+            }
         }
         EconomyResponse EconomyResponse = econ.depositPlayer(P,剩余);//尝试加钱
         if(EconomyResponse.transactionSuccess()){//判断操作是否成功
-            String 价格字符舍 = XianShiZiFu(qian);
-            String 扣税字符舍 = "无扣税";
-            if(是否扣税){
-                扣税字符舍 = XianShiZiFu(扣税);
-            }
-            String 剩余字符舍 = XianShiZiFu(剩余);
             if(显示消息){
                 P.sendMessage(赚钱消息.replaceAll("%钱%",价格字符舍).replaceAll("%税%",扣税字符舍).replaceAll("%剩余%",剩余字符舍));
             }
@@ -97,6 +109,10 @@ public class money {
             P.sendMessage("没有经济前置，无法处理");
             return false;
         }
+        if(qian<0){
+            P.sendMessage("出现负数，无法操作");
+            return false;
+        }
         String 价格字符舍 = XianShiZiFu(qian);
         if(!econ.has(P,qian)){//检查玩家是否有足够的钱
             if(显示消息){
@@ -108,6 +124,9 @@ public class money {
         if(EconomyResponse.transactionSuccess()){//判断操作是否成功
             if(显示消息){
                 P.sendMessage(花钱消息.replaceAll("%钱%",价格字符舍));
+            }
+            if(启用服务器账户){
+                main.getMain().getServermoney().increase(qian);
             }
             return true;
         }else {

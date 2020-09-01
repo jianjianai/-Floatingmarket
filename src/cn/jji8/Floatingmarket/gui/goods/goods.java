@@ -21,6 +21,10 @@ public interface goods {
      * */
     public void baocun();
     /**
+     * 删除时调用的方法
+     * */
+    public void delete();
+    /**
      * 加载方法,用于加载数据
      * false没有相关数据使用默认值 true加载成功
      * */

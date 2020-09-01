@@ -19,14 +19,12 @@ public class GoodsOrdinary extends wholegoods implements  goods{
         Thread T = new Thread(){
             @Override
             public void run() {
-                File F = new File(main.getMain().getDataFolder(),"Price/"+getname());
-                YamlConfiguration wenjian = YamlConfiguration.loadConfiguration(F);
                 wenjian.set("价格",价格);
                 wenjian.set("购买数量",购买数量);
                 wenjian.set("单独最高价格",单独最高价格);
                 wenjian.set("单独最低价格",单独最低价格);
                 try {
-                    wenjian.save(F);
+                    wenjian.save(文件);
                 } catch (IOException e) {
                     e.printStackTrace();
                     main.getMain().getLogger().warning("数据文件保存失败");
@@ -35,13 +33,23 @@ public class GoodsOrdinary extends wholegoods implements  goods{
         };
         T.start();
     }
+
+    /**
+     * 删除时调用的方法
+     */
+    @Override
+    public void delete() {
+        文件.delete();
+    }
+
     /**
      * 加载方法,用于加载数据
      * false没有相关数据使用默认值 true加载成功
      * */
+    File 文件;
+    YamlConfiguration wenjian;
     public void jiazai(){
-        YamlConfiguration wenjian;
-        wenjian = YamlConfiguration.loadConfiguration(new File(main.getMain().getDataFolder(),"Price/"+getname()));
+        wenjian = YamlConfiguration.loadConfiguration(文件 = new File(main.getMain().getDataFolder(),"Price/"+getname()));
         if(wenjian.contains("购买数量")){
             购买数量 = wenjian.getLong("购买数量");
         }else {
