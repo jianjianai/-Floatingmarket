@@ -113,7 +113,7 @@ public class implement implements CommandExecutor {
                 }
                 if(参数.length!=4&参数.length!=2){
                     commandSender.sendMessage("set 物品价格");
-                    commandSender.sendMessage("set 物品价格 最高价格 最低价格");
+                    commandSender.sendMessage("set 物品价格 最低价格 最高价格");
                     return true;
                 }
                 if(参数.length==4){
