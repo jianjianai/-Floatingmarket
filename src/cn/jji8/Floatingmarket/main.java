@@ -1,5 +1,6 @@
 package cn.jji8.Floatingmarket;
 
+import cn.jji8.Floatingmarket.Basics.config;
 import cn.jji8.Floatingmarket.account.money;
 import cn.jji8.Floatingmarket.account.server;
 import cn.jji8.Floatingmarket.command.completion;
