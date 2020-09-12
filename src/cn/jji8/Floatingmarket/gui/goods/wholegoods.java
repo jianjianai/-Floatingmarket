@@ -10,18 +10,43 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class wholegoods{
     long 购买数量 = 0;
-    public double 价格;
-    double 最高价格 = main.getMain().getConfig().getDouble("全局最高价格");
-    double 最低价格 = main.getMain().getConfig().getDouble("全局最低价格");
     double 涨跌幅度 = main.getMain().getConfig().getDouble("涨跌价格");
     double 涨跌指数 = main.getMain().getConfig().getDouble("涨跌指数");
     public double 单独最高价格 = -1;
     public double 单独最低价格 = -1;
     public ItemStack 物品;
     double 手续费 = main.getMain().getConfig().getDouble("手续费");
+    /**
+     * 获取当前价格
+     * */
+    public double getPrice(){
+        if(价格>0){
+            return 价格;
+        }
+        if(单独最高价格>0){
+            if(main.getMain().formulalist.calculation(购买数量,getMapvariable())>单独最高价格){
+                return 单独最高价格;
+            }
+        }
+        if(单独最低价格>0){
+            if(main.getMain().formulalist.calculation(购买数量,getMapvariable())<单独最低价格){
+                return 单独最低价格;
+            }
+        }
+        return main.getMain().formulalist.calculation(购买数量,getMapvariable());
+    }
+    /**
+     * 获取变量map
+     * */
+    public Map getMapvariable(){
+        Map<String,Double> sss = new HashMap<>();
+        sss.put("%购买数量%", (double) 购买数量);
+        return sss;
+    }
     /**
      * 调用此方法代表玩家出售此物品一组
      */
@@ -48,16 +73,19 @@ public class wholegoods{
                 P.sendMessage(扣除手续费.replaceAll("%钱%",Double.toString(手续费)));
             }
         }
-        购买数量 -= 数量;
-        tiaojia();
-        if(!money.jiaqian(P,数量*价格)){
+        double 钱 = 0;
+        for(int i = 0;i<数量;i++){
+            购买数量--;
+            钱 += getPrice();
+        }
+        if(!money.jiaqian(P,钱)){
             for(int i = 0;i<数量;i++){
                 购买数量++;
                 P.getInventory().addItem(物品);
             }
             return;
         }
-        tiaojiasuaxing();
+        shuaxin();
         baocun(10);
     }
     /**
@@ -104,7 +132,7 @@ public class wholegoods{
             try {
                 ItemStack = new ItemStack(Material.getMaterial(错误物品));
             }catch (Throwable a){
-                main.getMain().getLogger().warning("配置文件中“错误物品”错误，请检查配置文件");
+                main.getMain().getLogger().warning("config.yml文件中“错误物品”错误，请检查配置文件");
                 return new ItemStack(Material.BEDROCK);
             }
             错误 = true;
@@ -112,7 +140,7 @@ public class wholegoods{
             物品.setAmount(1);
             ItemStack = new ItemStack(物品);
         }
-        String 价格字符舍 = money.XianShiZiFu(价格);
+        String 价格字符舍 = money.XianShiZiFu(getPrice());
         ItemMeta ItemMeta = ItemStack.getItemMeta();
         if(错误){
             ItemMeta.setDisplayName("§7§l此物品配置错误");
@@ -180,7 +208,7 @@ public class wholegoods{
      * 调价
      * 用于调整物品价格
      * */
-    public void tiaojia(){
+    /**public void tiaojia(){
         while (购买数量>涨跌指数){
             if(单独最高价格>0){
                 最高价格 = 单独最高价格;
@@ -205,18 +233,19 @@ public class wholegoods{
                 break;
             }
         }
-    }
+    }*/
 
     /**
      * 用于获取物品价格
      */
     public double getjiage() {
-        return 价格;
+        return getPrice();
     }
 
     /**
      * 用于设置物品价格
      */
+    double 价格 = -1;
     public void setjiage(double 价格) {
         this.价格 = 价格;
     }
@@ -241,8 +270,7 @@ public class wholegoods{
     /**
      * 调价刷新
      * */
-    public void tiaojiasuaxing(){
-        tiaojia();
+    public void shuaxin(){
         main.getMain().event.shuaxin();
     }
     /**
@@ -258,19 +286,20 @@ public class wholegoods{
     String 增加手续费 = main.getMain().getConfig().getString("增加手续费");
     public void goumai(Player P, int 数量) {
         long 前购买数量 = 购买数量;
-        double 前价格 = 价格;
-        购买数量 += 数量;
-        tiaojia();
+        double 钱数 = 0;
+        for(int i = 0;i<数量;i++){
+            购买数量++;
+            钱数 += getPrice();
+        }
         double 总价格 = 0;
         if(手续费>0){
             P.sendMessage(增加手续费.replaceAll("%钱%",Double.toString(手续费)));
-            总价格 = (价格*数量)+手续费;
+            总价格 = 钱数+手续费;
         }else {
-            总价格 = 价格*数量;
+            总价格 = 钱数;
         }
         if(!money.kouqian(P,总价格)){
             购买数量 = 前购买数量;
-            价格 = 前价格;
             return;
         }
         int 退回数量 = 0;
@@ -283,11 +312,15 @@ public class wholegoods{
             }
         }
         if(退回数量!=0){
-            购买数量 -= 退回数量;
-            money.jiaqian(P,退回数量*价格,true,false);
+            double 钱 = 0;
+            for(int i = 0;i<退回数量;i++){
+                购买数量--;
+                钱 += getPrice();
+            }
+            money.jiaqian(P,钱,true,false);
             P.sendMessage(背包满消息);
         }
-        tiaojiasuaxing();
+        shuaxin();
         baocun(10);
     }
 }

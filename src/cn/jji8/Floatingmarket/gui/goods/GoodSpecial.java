@@ -63,7 +63,7 @@ public class GoodSpecial extends wholegoods implements  goods{
         if(wenjian.contains("价格")){
             价格 = wenjian.getDouble("价格");
         }else {
-            价格 = main.getMain().getConfig().getDouble("默认价格");
+            价格 = -1;
         }
         if(wenjian.contains("单独最高价格")){
             单独最高价格 = wenjian.getDouble("单独最高价格");

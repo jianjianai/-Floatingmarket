@@ -2,7 +2,9 @@ package cn.jji8.Floatingmarket.account;
 
 import java.util.Map;
 import java.util.Set;
-
+/**
+ * 用于计算表达试
+ * */
 public class formula {
     String formula;
     /**
@@ -162,7 +164,7 @@ public class formula {
      *          2  -
      *          3  *
      *          4  /
-     * @return 0 错误
+     * @return b 错误
      * */
     double calculation(int symbol,double a,double b){
         switch (symbol){
@@ -179,6 +181,6 @@ public class formula {
                 return a / b;
             }
         }
-        return 0;
+        return b;
     }
 }

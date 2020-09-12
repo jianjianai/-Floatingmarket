@@ -79,7 +79,7 @@ public class Case{
         try {
             ItemStack = new ItemStack(Material.getMaterial(无商品显示物品));
         }catch (Throwable a){
-            main.getMain().getLogger().warning("配置文件中“无商品显示物品”错误，请检查配置文件");
+            main.getMain().getLogger().warning("config.yml文件中“无商品显示物品”错误，请检查配置文件");
             return;
         }
         ItemMeta ItemMeta = ItemStack.getItemMeta();
@@ -97,7 +97,7 @@ public class Case{
         try {
             ItemStack = new ItemStack(Material.getMaterial(上一页物品按钮));
         }catch (Throwable a){
-            main.getMain().getLogger().warning("配置文件中“上一页物品按钮”错误，请检查配置文件");
+            main.getMain().getLogger().warning("config.yml文件中“上一页物品按钮”错误，请检查配置文件");
             return;
         }
         ItemMeta = ItemStack.getItemMeta();
@@ -108,7 +108,7 @@ public class Case{
         try {
             ItemStack = new ItemStack(Material.getMaterial(下一页物品按钮));
         }catch (Throwable a){
-            main.getMain().getLogger().warning("配置文件中“下一页物品按钮”错误，请检查配置文件");
+            main.getMain().getLogger().warning("config.yml文件中“下一页物品按钮”错误，请检查配置文件");
             return;
         }
         ItemMeta = ItemStack.getItemMeta();

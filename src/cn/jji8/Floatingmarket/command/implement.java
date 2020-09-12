@@ -61,7 +61,7 @@ public class implement implements CommandExecutor {
                 commandSender.sendMessage("§7//添加物品，将手上物品添加到商店中");
                 commandSender.sendMessage("§e/Floatingmarket set 物品价格");
                 commandSender.sendMessage("§e/Floatingmarket set 物品价格 最低价格 最高价格 ");
-                commandSender.sendMessage("§7//设置手上物品商品价格");
+                commandSender.sendMessage("§7//设置手上物品商品价格,-1代表不设置");
                 commandSender.sendMessage("§e/Floatingmarket delete");
                 commandSender.sendMessage("§7//删除手上物品商品");
                 commandSender.sendMessage("§e/Floatingmarket reload");

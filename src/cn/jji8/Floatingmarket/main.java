@@ -1,6 +1,7 @@
 package cn.jji8.Floatingmarket;
 
 import cn.jji8.Floatingmarket.Basics.config;
+import cn.jji8.Floatingmarket.account.Formulalist;
 import cn.jji8.Floatingmarket.account.money;
 import cn.jji8.Floatingmarket.account.server;
 import cn.jji8.Floatingmarket.command.completion;
@@ -17,6 +18,7 @@ public class main extends JavaPlugin {
     public event event;
     Metrics Metrics;
     server servermoney;
+    public Formulalist formulalist = new Formulalist();
     /**
      * 插件启动时会被调用
      * */
@@ -27,6 +29,7 @@ public class main extends JavaPlugin {
         event = new event();
         servermoney = new server();
         getLogger().info("开始加载...");
+        formulalist.setFormulalist();
         money.setupEconomy();//加载经济
         saveDefaultConfig();
         saveResource("commodity.yml",false);
@@ -49,6 +52,7 @@ public class main extends JavaPlugin {
      * 重新加载全部插件配置
      * */
     public void reload(){
+        formulalist.setFormulalist();
         money.setupEconomy();
         servermoney = new server();
         main.getMain().event = new event();
