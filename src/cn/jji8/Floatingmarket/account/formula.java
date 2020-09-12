@@ -23,7 +23,6 @@ public class formula {
         for(String a:set){
             operation = operation.replaceAll(a,String.valueOf(map.get(a)));
         }
-        System.out.println(operation);
         /**
 
          1  +
@@ -54,7 +53,7 @@ public class formula {
                         number = new StringBuffer();
                         break;
                     }
-                    case '-':{
+                    case '~':{
                         Symbol = 2;
                         try {
                             value = Double.valueOf(number.toString());
@@ -109,7 +108,7 @@ public class formula {
                         number = new StringBuffer();
                         break;
                     }
-                    case '-':{
+                    case '~':{
                         try {
                             temporary = Double.valueOf(number.toString());
                         }catch (NumberFormatException a){

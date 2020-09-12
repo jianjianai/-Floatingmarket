@@ -20,6 +20,14 @@ public class wholegoods{
     public double 单独最低价格 = -1;
     public ItemStack 物品;
     double 手续费 = main.getMain().getConfig().getDouble("手续费");
+
+    String 公式 = "默认";
+    /**
+     * 设置物品的公式名字
+     * */
+    public void setSetformula(String 公式名字){
+        公式 = 公式名字;
+    }
     /**
      * 获取当前价格
      * */
@@ -28,16 +36,16 @@ public class wholegoods{
             return 价格;
         }
         if(单独最高价格>0){
-            if(main.getMain().formulalist.calculation(购买数量,getMapvariable())>单独最高价格){
+            if(main.getMain().formulalist.calculation(购买数量,getMapvariable(),公式)>单独最高价格){
                 return 单独最高价格;
             }
         }
         if(单独最低价格>0){
-            if(main.getMain().formulalist.calculation(购买数量,getMapvariable())<单独最低价格){
+            if(main.getMain().formulalist.calculation(购买数量,getMapvariable(),公式)<单独最低价格){
                 return 单独最低价格;
             }
         }
-        return main.getMain().formulalist.calculation(购买数量,getMapvariable());
+        return main.getMain().formulalist.calculation(购买数量,getMapvariable(),公式);
     }
     /**
      * 获取变量map

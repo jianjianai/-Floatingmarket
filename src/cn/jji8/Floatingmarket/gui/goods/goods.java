@@ -61,4 +61,8 @@ public interface goods {
      * 调用此方法代表玩家购买一组物品
      * */
     public void goumaiyizu(Player P);
+    /**
+     * 设置物品的公式名字
+     * */
+    void setSetformula(String 公式名字);
 }

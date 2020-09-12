@@ -70,7 +70,21 @@ public class implement implements CommandExecutor {
                 commandSender.sendMessage("§7//交换两个商品的位置");
                 commandSender.sendMessage("§e/Floatingmarket setservermoney 钱");
                 commandSender.sendMessage("§7//设置服务器钱数");
+                commandSender.sendMessage("§e/Floatingmarket setformula 公式");
+                commandSender.sendMessage("§7//设置物品使用的公式");
                 commandSender.sendMessage("§6---------------------------------------------------");
+                return true;
+            }
+            if("setformula".equals(参数[0])){
+                if(!commandSender.hasPermission("Floatingmarket.setformula")){
+                    commandSender.sendMessage("你没有执行此命令的权限");
+                    return true;
+                }
+                if(参数.length!=2){
+                    commandSender.sendMessage("setformula 公式");
+                    return true;
+                }
+                setSetformula(Player,参数[1]);
                 return true;
             }
             if("addspecial".equals(参数[0])){
@@ -321,5 +335,20 @@ public class implement implements CommandExecutor {
     public void setServermoney(Double servermoney) {
         main.getMain().getServermoney().set余额(servermoney);
         main.getMain().event.shuaxin();
+    }
+
+    public void setSetformula(Player Player,String 公式名字) {
+        ItemStack 物品堆 = Player.getInventory().getItemInMainHand();
+        if(Material.AIR.equals(物品堆.getType())){
+            Player.sendMessage("你不可以空手");
+            return;
+        }
+        goods goods = main.getMain().event.shousuo(物品堆);
+        if(goods==null){
+            Player.sendMessage("此商品没有被上架");
+            return;
+        }
+        goods.setSetformula(公式名字);
+        Player.sendMessage("设置成功");
     }
 }

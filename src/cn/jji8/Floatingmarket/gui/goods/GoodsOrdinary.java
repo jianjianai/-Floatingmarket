@@ -23,6 +23,7 @@ public class GoodsOrdinary extends wholegoods implements  goods{
                 wenjian.set("购买数量",购买数量);
                 wenjian.set("单独最高价格",单独最高价格);
                 wenjian.set("单独最低价格",单独最低价格);
+                wenjian.set("公式",公式);
                 try {
                     wenjian.save(文件);
                 } catch (IOException e) {
@@ -65,6 +66,9 @@ public class GoodsOrdinary extends wholegoods implements  goods{
         }
         if(wenjian.contains("单独最低价格")){
             单独最低价格 = wenjian.getDouble("单独最低价格");
+        }
+        if(wenjian.contains("公式")){
+            公式 = wenjian.getString("公式");
         }
         baocun();
     }

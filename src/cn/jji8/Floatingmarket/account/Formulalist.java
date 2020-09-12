@@ -48,7 +48,7 @@ public class Formulalist {
      * */
     public Map getMap(long 数量,List<Map<?,?>> list){
         for(Map a:list){
-            if(数量<=(long)a.get("最高个数")&数量>=(long)a.get("最低个数")){
+            if(数量<=(int)a.get("最高个数")&数量>=(int)a.get("最低个数")){
                 return a;
             }
         }
