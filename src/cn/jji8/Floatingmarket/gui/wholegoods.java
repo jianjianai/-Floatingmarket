@@ -1,4 +1,4 @@
-package cn.jji8.Floatingmarket.gui.goods;
+package cn.jji8.Floatingmarket.gui;
 
 import cn.jji8.Floatingmarket.account.variable;
 import cn.jji8.Floatingmarket.main;
@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * 为了节约代码QAQ
+ * */
 public class wholegoods{
     long 购买数量 = 0;
     double 涨跌幅度 = main.getMain().getConfig().getDouble("涨跌价格");
@@ -110,12 +112,12 @@ public class wholegoods{
         shuaxin();
         baocun(10);
     }
+    long 执行时间 = -1;
     /**
      * 保存数据，但不会频繁重复保存
      * 在指定时间多次调用此方法，前面的调用无效
      * 时间/秒；
      * */
-    long 执行时间 = -1;
     public void baocun(int 时间秒){
         if(执行时间==-1){
             Thread T = new Thread(){
@@ -141,12 +143,15 @@ public class wholegoods{
             执行时间 = System.currentTimeMillis()+时间秒*1000;
         }
     }
+    /**
+     * 立即保存
+     * */
     public void baocun(){}
+    String 错误物品 = main.getMain().getConfig().getString("错误物品");
+    List<String> 价格显示 = main.getMain().getConfig().getStringList("价格显示");
     /**
      * 获取用于显示的物品堆
      */
-    String 错误物品 = main.getMain().getConfig().getString("错误物品");
-    List<String> 价格显示 = main.getMain().getConfig().getStringList("价格显示");
     public ItemStack getxianshiwupin() {
         boolean 错误 = false;
         ItemStack ItemStack;
@@ -298,11 +303,11 @@ public class wholegoods{
     public void goumaiyizu(Player P){
         goumai(P,物品.getMaxStackSize());
     }
+    String 背包满消息 = main.getMain().getConfig().getString("背包满消息");
+    String 增加手续费 = main.getMain().getConfig().getString("增加手续费");
     /**
      * 调用此方法代表玩家购买了此商品
      */
-    String 背包满消息 = main.getMain().getConfig().getString("背包满消息");
-    String 增加手续费 = main.getMain().getConfig().getString("增加手续费");
     public void goumai(Player P, int 数量q) {
         long 前购买数量 = 购买数量;
         double 钱数 = 0;

@@ -37,6 +37,8 @@ public class server {
     }
     /**
      * 加钱
+     * @return 成功或失败
+     * @param 钱 加的钱数
      * */
     public boolean increase(double 钱){
         余额 += 钱;

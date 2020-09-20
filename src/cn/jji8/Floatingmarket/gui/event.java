@@ -1,6 +1,5 @@
 package cn.jji8.Floatingmarket.gui;
 
-import cn.jji8.Floatingmarket.gui.goods.goods;
 import cn.jji8.Floatingmarket.main;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,12 +26,15 @@ public class event{
     }
     /**
      * get方法
+     * @return
+     * @param
      * */
     public List<String> get商品列表(){
         return 商品列表;
     }
     /**
      * 通过ItemStack添加商品
+     * @param a
      * */
     public void add(ItemStack a){
         a = new ItemStack(a);
@@ -48,6 +50,7 @@ public class event{
     }
     /**
      * 通过Material添加商品
+     * @param a
      * */
      public void add(Material a){
          商品列表.add(a.toString());
@@ -69,6 +72,8 @@ public class event{
      }
      /**
       * 搜索一个商品,没有返回null
+      * @param 商品
+      * @return
       * */
      public goods shousuo(Material 商品){
          for(Case a:biao){

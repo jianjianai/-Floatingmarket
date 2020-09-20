@@ -1,8 +1,5 @@
 package cn.jji8.Floatingmarket.gui;
 
-import cn.jji8.Floatingmarket.gui.goods.GoodSpecial;
-import cn.jji8.Floatingmarket.gui.goods.GoodsOrdinary;
-import cn.jji8.Floatingmarket.gui.goods.goods;
 import cn.jji8.Floatingmarket.main;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -26,10 +23,18 @@ public class Case{
     /**
      * 搜索，用于搜索一件商品
      * 没有商品返回null
+     * @param 商品 使用Material搜索商品
+     * @return 返回对应的goods
      * */
     public goods sousuo(Material 商品){
         return sousuo(new ItemStack(商品));
     }
+    /**
+     * 搜索，用于搜索一件商品
+     * 没有商品返回null
+     * @param 商品 使用ItemStack搜索商品
+     * @return 返回对应的goods
+     * */
     public goods sousuo(ItemStack 商品){
         for(goods goods:物品){
             if(goods!=null){
@@ -42,8 +47,8 @@ public class Case{
     }
     /**
      * 添加，添加箱子中的物品
-     * true 添加成功
-     * false 满了，或添加失败
+     * @param 商品 通过ItemStack(物品堆)添加商品
+     * @return true 添加成功 false 满了，或添加失败
      * */
     public boolean tianjia(ItemStack 商品){
         int 空位 = kongw();
@@ -65,15 +70,15 @@ public class Case{
         }
         return -1;
     }
-    /**
-     * 用于加载或刷新商店页面
-     * */
     String 上一页按钮名字 = main.getMain().getConfig().getString("上一页按钮名字");
     String 下一页按钮名字 = main.getMain().getConfig().getString("下一页按钮名字");
     String 无商品名字 = main.getMain().getConfig().getString("无商品名字");
     String 上一页物品按钮 = main.getMain().getConfig().getString("上一页物品按钮");
     String 下一页物品按钮 = main.getMain().getConfig().getString("下一页物品按钮");
     String 无商品显示物品 = main.getMain().getConfig().getString("无商品显示物品");
+    /**
+     * 用于加载或刷新商店页面
+     * */
     public void shuaxin(){
         ItemStack ItemStack;
         try {
@@ -118,6 +123,7 @@ public class Case{
     }
     /**
      * 玩家点击格子时触发
+     * @param a 代表玩家点击事件
      * */
     public void dianji(InventoryClickEvent a){
         //判断点击的是不是gui
@@ -146,6 +152,7 @@ public class Case{
     }
     /**
      * 用于给玩家打开gui
+     * @param a 需要打开gui的玩家
      * */
     public void dakai(Player a){
         a.openInventory(箱子);
@@ -153,6 +160,8 @@ public class Case{
     /**
      * 用于添加普通物品
      * true成功 fales满了
+     * @param 物品
+     * @return
      * */
     public boolean add(ItemStack 物品){
         for(int i=0;i<this.物品.length;i++){
@@ -168,6 +177,9 @@ public class Case{
      * 用于添加特殊物品
      * true成功 fales满了
      * ItemStack可以null
+     * @param a
+     * @param 文件名字
+     * @return
      * */
     public boolean add(String 文件名字,ItemStack a){
         for(int i=0;i<this.物品.length;i++){

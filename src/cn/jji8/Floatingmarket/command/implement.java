@@ -1,9 +1,7 @@
 package cn.jji8.Floatingmarket.command;
 
-import cn.jji8.Floatingmarket.gui.event;
-import cn.jji8.Floatingmarket.gui.goods.goods;
+import cn.jji8.Floatingmarket.gui.goods;
 import cn.jji8.Floatingmarket.main;
-import cn.jji8.Floatingmarket.account.money;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;

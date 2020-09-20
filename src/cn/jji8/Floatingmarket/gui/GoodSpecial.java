@@ -1,4 +1,4 @@
-package cn.jji8.Floatingmarket.gui.goods;
+package cn.jji8.Floatingmarket.gui;
 
 import cn.jji8.Floatingmarket.main;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -7,14 +7,16 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 
+
 /**
- * 主要负责普通商品的处理
+ * 负责特殊物品处理
  * */
-public class GoodsOrdinary extends wholegoods implements  goods{
+public class GoodSpecial extends wholegoods implements  goods{
     /**
      * 保存方法,用于保存数据
-     * */
-    public void baocun(){
+     */
+    @Override
+    public void baocun() {
         //完全异步保存
         Thread T = new Thread(){
             @Override
@@ -22,7 +24,7 @@ public class GoodsOrdinary extends wholegoods implements  goods{
                 wenjian.set("购买数量",购买数量);
                 wenjian.set("单独最高价格",单独最高价格);
                 wenjian.set("单独最低价格",单独最低价格);
-                wenjian.set("公式",公式);
+                wenjian.set("物品",物品);
                 try {
                     wenjian.save(文件);
                 } catch (IOException e) {
@@ -45,11 +47,13 @@ public class GoodsOrdinary extends wholegoods implements  goods{
     /**
      * 加载方法,用于加载数据
      * false没有相关数据使用默认值 true加载成功
-     * */
+     */
+    String 文件名字;
     File 文件;
     YamlConfiguration wenjian;
-    public void jiazai(){
-        wenjian = YamlConfiguration.loadConfiguration(文件 = new File(main.getMain().getDataFolder(),"Price/"+getname()));
+    @Override
+    public void jiazai() {
+        wenjian = YamlConfiguration.loadConfiguration(文件 = new File(main.getMain().getDataFolder(),"special/"+getname()));
         if(wenjian.contains("购买数量")){
             购买数量 = wenjian.getLong("购买数量");
         }else {
@@ -61,41 +65,38 @@ public class GoodsOrdinary extends wholegoods implements  goods{
         if(wenjian.contains("单独最低价格")){
             单独最低价格 = wenjian.getDouble("单独最低价格");
         }
-        if(wenjian.contains("公式")){
-            公式 = wenjian.getString("公式");
+        if(wenjian.contains("物品")){
+            物品 = wenjian.getItemStack("物品");
         }
         baocun();
     }
-
     /**
      * 用于获取原商品
      */
     @Override
     public ItemStack getshangping() {
-        if(物品==null){
-            return null;
-        }
-        return new ItemStack(物品);
+        物品.setAmount(1);
+        return 物品;
     }
     /**
      * 获取物品的名字
      */
     @Override
     public String getname() {
-        if(物品==null){
-            return "错误";
-        }
-        return 物品.getType().toString();
+        return 文件名字;
     }
 
     /**
-     * boolean 加载 true从配置文件中加载数据 false不加载数据,使用默认值
+     * 构造方法一个
+     * ItemStack可以null
      * */
-    public GoodsOrdinary(ItemStack 物品){
-        this.物品 = 物品;
-        购买数量 = 0;
-    }
-    public ItemStack get物品() {
-        return 物品;
+    public GoodSpecial(String 文件名字,ItemStack a){
+        this.文件名字 = 文件名字;
+        jiazai();
+        if(a==null){
+            return;
+        }
+        物品=a;
+        baocun();
     }
 }

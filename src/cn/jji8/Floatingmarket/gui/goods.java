@@ -1,4 +1,4 @@
-package cn.jji8.Floatingmarket.gui.goods;
+package cn.jji8.Floatingmarket.gui;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
