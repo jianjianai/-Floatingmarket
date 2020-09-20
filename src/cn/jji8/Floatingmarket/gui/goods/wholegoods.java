@@ -1,5 +1,6 @@
 package cn.jji8.Floatingmarket.gui.goods;
 
+import cn.jji8.Floatingmarket.account.variable;
 import cn.jji8.Floatingmarket.main;
 import cn.jji8.Floatingmarket.account.money;
 import org.bukkit.Material;
@@ -21,7 +22,7 @@ public class wholegoods{
     public ItemStack 物品;
     double 手续费 = main.getMain().getConfig().getDouble("手续费");
 
-    String 公式 = "默认";
+    String 公式 = "Price";
     /**
      * 设置物品的公式名字
      * */
@@ -32,20 +33,21 @@ public class wholegoods{
      * 获取当前价格
      * */
     public double getPrice(){
-        if(价格>0){
-            return 价格;
-        }
+        double jiage = main.getMain().getFunction().Doublefunction(公式,
+                new variable()
+                        .setNumberOfItems(购买数量)
+        );
         if(单独最高价格>0){
-            if(main.getMain().formulalist.calculation(购买数量,getMapvariable(),公式)>单独最高价格){
+            if(jiage>单独最高价格){
                 return 单独最高价格;
             }
         }
         if(单独最低价格>0){
-            if(main.getMain().formulalist.calculation(购买数量,getMapvariable(),公式)<单独最低价格){
+            if(jiage<单独最低价格){
                 return 单独最低价格;
             }
         }
-        return main.getMain().formulalist.calculation(购买数量,getMapvariable(),公式);
+        return jiage;
     }
     /**
      * 获取变量map
@@ -61,13 +63,14 @@ public class wholegoods{
     public void chushouyizu(Player P){
         chushou(P,物品.getMaxStackSize());
     }
-    /**
-     * 调用此方法代表玩家出售此物品
-     */
+
     String 没物品消息 = main.getMain().getConfig().getString("没物品消息");
     String 操作失败消息 = main.getMain().getConfig().getString("操作失败消息");
     String 手续费不足 = main.getMain().getConfig().getString("手续费不足");
     String 扣除手续费 = main.getMain().getConfig().getString("扣除手续费");
+    /**
+     * 调用此方法代表玩家出售此物品
+     */
     public void chushou(Player P, int 数量) {
         if(!kouwupin(P,数量,物品)){
             P.sendMessage(没物品消息);
@@ -82,12 +85,23 @@ public class wholegoods{
             }
         }
         double 钱 = 0;
+        int 数量a = 数量;
         for(int i = 0;i<数量;i++){
             购买数量--;
-            钱 += getPrice();
+            double qian = getPrice();
+            if(qian>=0){
+                钱 += qian;
+            }else {
+                购买数量++;
+                数量a--;
+                P.getInventory().addItem(物品);
+            }
+        }
+        if(钱==0){
+            return;
         }
         if(!money.jiaqian(P,钱)){
-            for(int i = 0;i<数量;i++){
+            for(int i = 0;i<数量a;i++){
                 购买数量++;
                 P.getInventory().addItem(物品);
             }
@@ -161,16 +175,14 @@ public class wholegoods{
             ArrayList = new ArrayList();
         }
         String 服务器账户余额字符舍 = money.XianShiZiFu(main.getMain().getServermoney().getmoney());
+        Object stock = main.getMain().getFunction().function("stock",
+                new variable()
+                        .setNumberOfItems(购买数量)
+        );
         for(String S:价格显示){
-            if(购买数量>=0){
-                S = S.replaceAll("%价格%",价格字符舍)
-                        .replaceAll("%购买数量%","+"+购买数量)
-                        .replaceAll("%服务器账户余额%",服务器账户余额字符舍);
-            }else {
-                S = S.replaceAll("%价格%",价格字符舍)
-                        .replaceAll("%购买数量%",Long.toString(购买数量))
-                        .replaceAll("%服务器账户余额%",服务器账户余额字符舍);
-            }
+            S = S.replaceAll("%价格%",价格字符舍)
+                    .replaceAll("%购买数量%",stock.toString())
+                    .replaceAll("%服务器账户余额%",服务器账户余额字符舍);
             ArrayList.add(S);
         }
         ItemMeta.setLore(ArrayList);
@@ -251,11 +263,10 @@ public class wholegoods{
     }
 
     /**
-     * 用于设置物品价格
+     * 用于设置物品库存
      */
-    double 价格 = -1;
-    public void setjiage(double 价格) {
-        this.价格 = 价格;
+    public void setjiage(int 价格) {
+        this.购买数量 = 价格;
     }
 
     /**
@@ -292,12 +303,19 @@ public class wholegoods{
      */
     String 背包满消息 = main.getMain().getConfig().getString("背包满消息");
     String 增加手续费 = main.getMain().getConfig().getString("增加手续费");
-    public void goumai(Player P, int 数量) {
+    public void goumai(Player P, int 数量q) {
         long 前购买数量 = 购买数量;
         double 钱数 = 0;
-        for(int i = 0;i<数量;i++){
+        int 数量 = 数量q;
+        for(int i = 0;i<数量q;i++){
             购买数量++;
-            钱数 += getPrice();
+            double sss = getPrice();
+            if(sss>=0){
+                钱数 += sss;
+            }else {
+                数量--;
+                购买数量--;
+            }
         }
         double 总价格 = 0;
         if(手续费>0){
@@ -305,6 +323,9 @@ public class wholegoods{
             总价格 = 钱数+手续费;
         }else {
             总价格 = 钱数;
+        }
+        if(总价格==0){
+            return;
         }
         if(!money.kouqian(P,总价格)){
             购买数量 = 前购买数量;

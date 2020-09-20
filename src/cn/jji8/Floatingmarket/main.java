@@ -2,6 +2,7 @@ package cn.jji8.Floatingmarket;
 
 import cn.jji8.Floatingmarket.Basics.config;
 import cn.jji8.Floatingmarket.account.Formulalist;
+import cn.jji8.Floatingmarket.account.function;
 import cn.jji8.Floatingmarket.account.money;
 import cn.jji8.Floatingmarket.account.server;
 import cn.jji8.Floatingmarket.command.completion;
@@ -9,6 +10,9 @@ import cn.jji8.Floatingmarket.command.implement;
 import cn.jji8.Floatingmarket.gui.event;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.nio.charset.Charset;
 
 /**
  * 一个主类
@@ -18,7 +22,11 @@ public class main extends JavaPlugin {
     public event event;
     Metrics Metrics;
     server servermoney;
-    public Formulalist formulalist = new Formulalist();
+    function function;
+    public cn.jji8.Floatingmarket.account.function getFunction() {
+        return function;
+    }
+
     /**
      * 插件启动时会被调用
      * */
@@ -29,13 +37,14 @@ public class main extends JavaPlugin {
         event = new event();
         servermoney = new server();
         getLogger().info("开始加载...");
-        formulalist.setFormulalist();
         money.setupEconomy();//加载经济
         saveDefaultConfig();
         saveResource("commodity.yml",false);
+        saveResource("function.js",false);
         Bukkit.getPluginCommand("Floatingmarket").setExecutor(new implement());
         Bukkit.getPluginCommand("Floatingmarket").setTabCompleter(new completion());
         Bukkit.getPluginManager().registerEvents(new eventlisteners(),this);
+        function = new function(new File(getDataFolder(),"function.js"));
         event.jiazai();
     }
 
@@ -52,7 +61,7 @@ public class main extends JavaPlugin {
      * 重新加载全部插件配置
      * */
     public void reload(){
-        formulalist.setFormulalist();
+        function = new function(new File(getDataFolder(),"function.js"));
         money.setupEconomy();
         servermoney = new server();
         main.getMain().event = new event();

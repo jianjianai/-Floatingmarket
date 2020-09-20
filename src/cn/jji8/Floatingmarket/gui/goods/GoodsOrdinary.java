@@ -19,7 +19,6 @@ public class GoodsOrdinary extends wholegoods implements  goods{
         Thread T = new Thread(){
             @Override
             public void run() {
-                wenjian.set("价格",价格);
                 wenjian.set("购买数量",购买数量);
                 wenjian.set("单独最高价格",单独最高价格);
                 wenjian.set("单独最低价格",单独最低价格);
@@ -55,11 +54,6 @@ public class GoodsOrdinary extends wholegoods implements  goods{
             购买数量 = wenjian.getLong("购买数量");
         }else {
             购买数量 = 0;
-        }
-        if(wenjian.contains("价格")){
-            价格 = wenjian.getDouble("价格");
-        }else {
-            价格 = -1;
         }
         if(wenjian.contains("单独最高价格")){
             单独最高价格 = wenjian.getDouble("单独最高价格");
@@ -99,7 +93,6 @@ public class GoodsOrdinary extends wholegoods implements  goods{
      * */
     public GoodsOrdinary(ItemStack 物品){
         this.物品 = 物品;
-        价格 = -1;
         购买数量 = 0;
     }
     public ItemStack get物品() {

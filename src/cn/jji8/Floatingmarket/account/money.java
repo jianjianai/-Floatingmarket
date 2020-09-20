@@ -19,8 +19,9 @@ public class money {
     static String 没钱消息;
     static String 服务器没钱消息;
     static int 保留小数位数;
-    static double 个人所得税;
+    static String 个人所得税计算函数;
     static boolean 启用服务器账户;
+    static function function;
     /**
      * 插件启动时被调用,用于加载经济
      * */
@@ -28,12 +29,15 @@ public class money {
         main.getMain().saveResource("money.yml",false);
         File F = new File(main.getMain().getDataFolder(),"money.yml");
         YamlConfiguration peizhi = YamlConfiguration.loadConfiguration(F);
+        main.getMain().saveResource("moneyFunction.js",false);
+        File F2 = new File(main.getMain().getDataFolder(),"moneyFunction.js");
+        function = new function(F2);
         赚钱消息 = peizhi.getString("赚钱消息");
         花钱消息 = peizhi.getString("花钱消息");
         没钱消息 = peizhi.getString("没钱消息");
         服务器没钱消息 = peizhi.getString("服务器没钱消息");
         保留小数位数 = peizhi.getInt("保留小数位数");
-        个人所得税 = peizhi.getDouble("个人所得税");
+        个人所得税计算函数 = peizhi.getString("个人所得税计算函数");
         启用服务器账户 = peizhi.getBoolean("启用服务器账户");
         if (main.getMain().getServer().getPluginManager().getPlugin("Vault") == null) {
             System.out.println("没有找到Vault依赖");
@@ -64,19 +68,21 @@ public class money {
             P.sendMessage("出现负数，无法操作");
             return false;
         }
-        double 扣税 = 0;
         double 剩余 = qian;
+        double 个人所得税 = function.Doublefunction(个人所得税计算函数,
+                new variable()
+                        .setTransactionAmount(qian)
+        );
         if(个人所得税<=0){
             是否扣税 = false;
         }
         if(是否扣税){
-            扣税 = qian*个人所得税;
-            剩余 = qian-扣税;
+            剩余 = qian-个人所得税;
         }
         String 价格字符舍 = XianShiZiFu(qian);
         String 扣税字符舍 = "无扣税";
         if(是否扣税){
-            扣税字符舍 = XianShiZiFu(扣税);
+            扣税字符舍 = XianShiZiFu(个人所得税);
         }
         String 剩余字符舍 = XianShiZiFu(剩余);
         if(启用服务器账户){

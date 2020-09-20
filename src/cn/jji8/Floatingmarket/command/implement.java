@@ -59,9 +59,9 @@ public class implement implements CommandExecutor {
                 commandSender.sendMessage("§7//添加特殊物品，将手上特殊物品添加到商店中，会保存物品中全部数据");
                 commandSender.sendMessage("§e/Floatingmarket add");
                 commandSender.sendMessage("§7//添加物品，将手上物品添加到商店中");
-                commandSender.sendMessage("§e/Floatingmarket set 物品价格");
-                commandSender.sendMessage("§e/Floatingmarket set 物品价格 最低价格 最高价格 ");
-                commandSender.sendMessage("§7//设置手上物品商品价格,-1代表不设置");
+                commandSender.sendMessage("§e/Floatingmarket set 库存数量");
+                commandSender.sendMessage("§e/Floatingmarket set 库存数量 最低价格 最高价格 ");
+                commandSender.sendMessage("§7//设置手上物品的库存数量");
                 commandSender.sendMessage("§e/Floatingmarket delete");
                 commandSender.sendMessage("§7//删除手上物品商品");
                 commandSender.sendMessage("§e/Floatingmarket reload");
@@ -126,13 +126,13 @@ public class implement implements CommandExecutor {
                     return true;
                 }
                 if(参数.length!=4&参数.length!=2){
-                    commandSender.sendMessage("set 物品价格");
-                    commandSender.sendMessage("set 物品价格 最低价格 最高价格");
+                    commandSender.sendMessage("set 库存数量");
+                    commandSender.sendMessage("set 库存数量 最低价格 最高价格");
                     return true;
                 }
                 if(参数.length==4){
                     try {
-                        tianjia(Player,Double.valueOf(参数[1]),Double.valueOf(参数[2]),Double.valueOf(参数[3]));
+                        tianjia(Player,Integer.valueOf(参数[1]),Double.valueOf(参数[2]),Double.valueOf(参数[3]));
                     }catch (NumberFormatException a){
                         commandSender.sendMessage("你输入的数字不是一个有效数字");
                     }
@@ -140,7 +140,7 @@ public class implement implements CommandExecutor {
                 }
                 if(参数.length==2){
                     try {
-                        tianjia(Player,Double.valueOf(参数[1]));
+                        tianjia(Player,Integer.valueOf(参数[1]));
                     }catch (NumberFormatException a){
                         commandSender.sendMessage("你输入的数字不是一个有效数字");
                     }
@@ -277,7 +277,7 @@ public class implement implements CommandExecutor {
     /**
      * 修改方法，修改物品的价格
      * */
-    public static void tianjia(Player Player, double 价格, double 最低价格, double 最高价格){
+    public static void tianjia(Player Player, int 价格, double 最低价格, double 最高价格){
         ItemStack 物品堆 = Player.getInventory().getItemInMainHand();
         if(Material.AIR.equals(物品堆.getType())){
             Player.sendMessage("你不可以空手");
@@ -298,7 +298,7 @@ public class implement implements CommandExecutor {
     /**
      * 修改方法，修改物品的价格
      * */
-    public static void tianjia(Player Player, double 价格){
+    public static void tianjia(Player Player, int 价格){
         tianjia(Player,价格,-1,-1);
     }
     /**

@@ -1,25 +1,19 @@
 package cn.jji8.Floatingmarket.account;
 
-import java.io.File;
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class 测试 {
     public static void main(String[] args) {
-        formula formula = new formula("变量1");
-        Map map = new HashMap<String,Double>();
-        map.put("变量1",10);
-        map.put("变量2",13);
-        map.put("变量3",14);
-        map.put("变量4",8);
-        map.put("变量5",5);
-        double a = formula.calculation(map);
-        System.out.println(a);
-
-        File file = new File("C:\\工作路径\\新建文本文档.yml");
-        Formulalist formulalist = new Formulalist();
-        formulalist.setFormulalist(file);
-        double s = formulalist.calculation(3,new HashMap<>());
-        System.out.println(s);
+        function function = new function(new File("C:/工作路径/123.js"));
+        variable variable = new variable();
+        variable.setNumberOfItems(10);
+        double sss = function.Doublefunction("价格",variable);
+        System.out.println(sss);
     }
 }

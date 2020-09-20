@@ -38,9 +38,9 @@ public interface goods {
      * */
     public double getjiage();
     /**
-     * 用于设置物品的固定价格
+     * 用于设置物品库存
      * */
-    public void setjiage(double 价格);
+    public void setjiage(int 价格);
     /**
      * 用于设置物品最高价格
      * */
